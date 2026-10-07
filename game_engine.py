@@ -6,11 +6,16 @@ class GameEngine:
     def __init__(self, game_state, validator):
         self.state = game_state
         self.validator = validator
+        self.remaining_letters = list(game_state.word)
 
     def make_guess(self, guess):
         guess = guess.strip().lower()
 
         if not self.validator.is_valid(guess, self.state.length):
+
+            self.state.total_attempts += 1
+            self.state.incorrect_attempts += 1
+
             return {
                 "status": "invalid",
                 "message": "Invalid word or outside of the game's word list."
@@ -32,24 +37,32 @@ class GameEngine:
         wrong_positioned_letters = set()
         not_present_letters = set()
 
-        remaining_letters = list(self.state.word)
 
         for i in range(self.state.length):
             if guess[i] == self.state.word[i]:
                 self.state.revealed[i] = True
-                remaining_letters[i] = None
+                self.remaining_letters[i] = None
 
         for i in range(self.state.length):
             if guess [i]==self.state.word[i]:
                 continue
 
-            if guess[i] in remaining_letters:
+            if guess[i] in self.remaining_letters:
                 wrong_positioned_letters.add(guess[i])
 
             else:
                 not_present_letters.add(guess[i])
         
         self.state.incorrect_attempts += 1
+
+        if all(self.state.revealed):
+            self.state.won = True
+            return {
+                    "status": "revealed",
+                    "wrong_positioned_letters": list(wrong_positioned_letters),
+                    "not_present_letters": list(not_present_letters),
+                    "message": "You revealed the word by wrong guesses."
+            }
 
         return {
             "status": "wrong",
@@ -84,6 +97,7 @@ class GameEngine:
 
         self.state.use_hint()
         self.state.revealed[position] = True
+        self.remaining_letters[position]=None
         if all(self.state.revealed):
             self.state.won=True
             return{

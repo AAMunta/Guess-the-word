@@ -131,6 +131,9 @@ async function startGame(level) {
     selectedLevel = level;
 
     document.getElementById("guess-input").value = "";
+    document.getElementById("guess-input").disabled = false;
+    document.getElementById("guess-button").disabled = false;
+    document.getElementById("confirmation-area").innerHTML = "";
 
     try {
 
@@ -280,23 +283,25 @@ async function makeGuess() {
 
         input.value = "";
 
-
-        if (data.status === "invalid") {
-
-            showMessage(
-                "Invalid word or outside of the game's word list."
-            );
-
-            return;
-
-        }
-
-
         currentGame.totalAttempts = data.total_attempts;
         document.getElementById("total-attempts").textContent = data.total_attempts;
         currentGame.clueAvailable = data.clue_available;
         currentGame.forfeitAvailable = data.forfeit_available;
         currentGame.revealed = data.revealed;
+        
+        if (data.status === "invalid") {
+
+            clearGuessResult();
+            updateGameActions();
+
+            showMessage(
+                "Invalid word or outside of the game's word list."
+            );
+            
+            return;
+
+        }
+        
 
         if (data.status === "won") {
 
@@ -306,6 +311,23 @@ async function makeGuess() {
 
             return;
 
+        }
+
+        if (data.status === "revealed") {
+            displayWord(data.revealed);
+            displayGuessResult(data);
+
+            document.getElementById("guess-input").disabled = true;
+            document.getElementById("guess-button").disabled = true;
+
+            document.getElementById("clue-area").innerHTML = "";
+            document.getElementById("forfeit-area").innerHTML = "";
+
+            setTimeout(function () {
+            showFinalResult(data);
+            }, 2000);
+
+            return;
         }
 
 
@@ -586,18 +608,17 @@ function showFinalResult(data) {
 
 
     if (data.status === "forfeited") {
-
         document.getElementById("final-title").textContent =
-            "GAME OVER";
-
+        "GAME OVER";
+    }
+    else if (data.status === "revealed") {
+        document.getElementById("final-title").textContent =
+        data.message;
     }
     else {
-
         document.getElementById("final-title").textContent =
-            "CONGRATULATIONS!";
-
+        "CONGRATULATIONS!";
     }
-
 
     showScreen("result-screen");
 

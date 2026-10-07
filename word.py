@@ -1,6 +1,7 @@
 import csv
 from wordfreq import iter_wordlist,zipf_frequency
 from english_words import get_english_words_set
+from spellchecker import SpellChecker
 
 MIN_LENGTH=3
 MAX_LENGTH=12
@@ -10,6 +11,11 @@ EnglishWords = get_english_words_set(
     ["web2", "gcide"],
     lower=True
 )
+
+spell = SpellChecker()
+common_words = set(spell.word_frequency.keys())
+
+EnglishWords.update(common_words)
 
 AllWords=iter_wordlist("en")
 Words=set()

@@ -58,9 +58,6 @@ def get_word_display(game_state):
 @app.get("/api/progress")
 def get_progress():
 
-    # For now this uses one offline player.
-    # Later this can be connected to user accounts.
-
     progress = sessions.get("player_progress")
 
     if progress is None:
@@ -169,13 +166,20 @@ def make_guess(request: GuessRequest):
         request.guess
     )
 
+    game_state = game_engine.state
 
     if result["status"] == "invalid":
+        
+        return {
+            "status": "invalid",
+            "total_attempts": game_state.total_attempts,
+            "clue_available": game_state.clue_available(),
+            "forfeit_available": game_state.can_forfeit(),
+            "hints_used": game_state.hints_used,
+            "max_hints": game_state.max_hints
+        }
 
-        return result
 
-
-    game_state = game_engine.state
 
 
     response = {
@@ -198,19 +202,25 @@ def make_guess(request: GuessRequest):
 
 
     if game_state.won:
+        
+        if result["status"] == "revealed":
+            points = 50
+        else:
+            scoring = OfflineScoring(
+                game_state.level
+            )
 
-        scoring = OfflineScoring(
-            game_state.level
-        )
-
-        points = scoring.calculate_points(
-            game_state
-        )
+            points = scoring.calculate_points(
+                game_state
+            )
 
         session["progress"].add_points(points)
-
+        
         response["word"] = game_state.word
         response["points"] = points
+
+    if result["status"] == "revealed":
+        response["message"] = result["message"]
 
 
     return response
