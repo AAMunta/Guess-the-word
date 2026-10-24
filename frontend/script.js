@@ -703,3 +703,57 @@ async function loadProgress() {
 }
 
 loadProgress();
+
+
+document.querySelectorAll(".rules-section").forEach(function (section) {
+    const tabs = section.querySelectorAll(".rules-tab");
+    const panels = section.querySelectorAll(".rules-panel");
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+            const selectedTab = tab.dataset.rulesTab;
+
+            tabs.forEach(function (item) {
+                item.classList.toggle("active", item === tab);
+            });
+
+            panels.forEach(function (panel) {
+                panel.classList.toggle(
+                    "active",
+                    panel.dataset.rulesPanel === selectedTab
+                );
+            });
+        });
+    });
+});
+
+const rulesPageControls = [
+    {
+        button: document.getElementById("home-rules-button"),
+        section: document.getElementById("home-rules-section")
+    },
+    {
+        button: document.getElementById("game-rules-button"),
+        section: document.getElementById("game-rules-section")
+    }
+];
+
+rulesPageControls.forEach(function (item) {
+    if (!item.button || !item.section) {
+        return;
+    }
+
+    item.button.addEventListener("click", function () {
+        item.section.classList.add("open");
+        item.button.style.visibility = "hidden";
+    });
+
+    const closeButton = item.section.querySelector(".rules-close-button");
+
+    if (closeButton) {
+        closeButton.addEventListener("click", function () {
+            item.section.classList.remove("open");
+            item.button.style.visibility = "visible";
+        });
+    }
+});

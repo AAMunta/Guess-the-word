@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Guess-the-Word</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -14,20 +12,21 @@
 
     <main id="home-screen" class="screen active">
 
+        <button type="button" id="home-rules-button" class="rules-button">
+            Rules
+        </button>
+
         <h1 class="game-title">GUESS-THE-WORD</h1>
 
         <section class="progression">
-
             <p>
                 Highest Level:
                 <span id="player-level">1</span>
             </p>
-
             <p>
                 Points:
                 <span id="player-points">0</span>
             </p>
-
         </section>
 
         <h2 class="choose-level">Choose Your Level</h2>
@@ -71,34 +70,166 @@
 
         </section>
 
+        <section class="rules-section" id="home-rules-section" aria-label="Game rules">
+
+            <button type="button" class="rules-close-button">
+                Close
+            </button>
+
+            <h2>RULES</h2>
+
+            <div class="rules-tabs">
+                <button type="button" class="rules-tab active"
+                    data-rules-tab="summary">Summary</button>
+                <button type="button" class="rules-tab"
+                    data-rules-tab="detailed">Detailed Rules</button>
+            </div>
+
+            <div class="rules-panel active" data-rules-panel="summary">
+                <h3>How to Play</h3>
+                <ul>
+                    <li>Guess the hidden English word using the given word length.</li>
+                    <li>A letter is revealed when both the letter and its position are correct.</li>
+                    <li>After an unsuccessful guess, the game shows wrong-position and not-present letters.</li>
+                    <li>You can use a limited number of clues, depending on your level.</li>
+                    <li>After using all your clues, you may choose to forfeit the game.</li>
+                    <li>Your points depend on the result of the game.</li>
+                </ul>
+            </div>
+
+            <div class="rules-panel" data-rules-panel="detailed">
+                <h3>Detailed Rules</h3>
+
+                <h4>1. Guessing the Word</h4>
+                <p>
+                    Each game has a hidden English word. Use the displayed word
+                    length to make a guess. Your guess must have the correct
+                    length and belong to the game's word list.
+                </p>
+                <p>
+                    If a guessed letter matches the secret word at the same
+                    position, that letter is revealed on the word board.
+                    Letters already revealed in their correct positions are
+                    not reported as wrong-position or not-present letters.
+                </p>
+                <p>
+                    After an unsuccessful valid guess, the game displays
+                    wrong-position letters and letters that are not present
+                    in the remaining unrevealed word. Repeated letters in
+                    these result lists are shown only once.
+                </p>
+                <p>
+                    Invalid guesses do not reveal letters, but they count
+                    toward your total attempts and the counter that makes
+                    clues available.
+                </p>
+
+                <h4>2. Levels and Clues</h4>
+                <p>
+                    Each level provides a limited number of clues. A clue
+                    reveals one unrevealed letter in the word.
+                </p>
+
+                <div class="rules-table-wrapper">
+                    <table class="rules-table">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Name</th>
+                                <th>Maximum Clues</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Easy</td><td>2</td></tr>
+                            <tr><td>2</td><td>Normal</td><td>2</td></tr>
+                            <tr><td>3</td><td>Intermediate</td><td>3</td></tr>
+                            <tr><td>4</td><td>Advanced</td><td>3</td></tr>
+                            <tr><td>5</td><td>Expert</td><td>4</td></tr>
+                            <tr><td>6</td><td>Master</td><td>4</td></tr>
+                            <tr><td>7</td><td>Legend</td><td>5</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    A clue becomes available after five unsuccessful attempts.
+                    Using a clue resets the unsuccessful-attempt counter.
+                    The clue button appears when a clue is available.
+                </p>
+
+                <h4>3. Forfeiting</h4>
+                <p>
+                    Once all clues for the current level have been used, you
+                    can choose to forfeit. Forfeiting ends the game, reveals
+                    the word, and deducts points based on your level.
+                </p>
+
+                <h4>4. Points</h4>
+                <p>
+                    <strong>Correctly guessing the word:</strong> You earn
+                    points based on your level, reduced by 15% of the base
+                    points for each clue used.
+                </p>
+                <p>
+                    <strong>Revealing the whole word through wrong guesses:</strong>
+                    You earn a fixed 50 points.
+                </p>
+                <p>
+                    <strong>Forfeiting:</strong> You lose 25 points multiplied
+                    by your level.
+                </p>
+
+                <div class="rules-formula">
+                    <p><strong>Winning points</strong></p>
+                    <p>Base points = Level × 100</p>
+                    <p>Final points = Base points × (1 − 0.15 × clues used)</p>
+                    <p><strong>Forfeit penalty</strong> = Level × 25 points</p>
+                </div>
+
+                <h4>5. Unlocking Levels</h4>
+                <p>
+                    Your available level depends on your total points.
+                    Reach the following totals to unlock each next level.
+                </p>
+
+                <ul>
+                    <li>500 points — Level 2: Normal</li>
+                    <li>1,200 points — Level 3: Intermediate</li>
+                    <li>2,000 points — Level 4: Advanced</li>
+                    <li>3,000 points — Level 5: Expert</li>
+                    <li>4,200 points — Level 6: Master</li>
+                    <li>5,500 points — Level 7: Legend</li>
+                </ul>
+            </div>
+
+        </section>
+
     </main>
 
 
     <main id="game-screen" class="screen">
 
-        <section class="game-header">
+        <button type="button" id="game-rules-button" class="rules-button">
+            Rules
+        </button>
 
+        <section class="game-header">
             <h2 id="game-level">LEVEL 1</h2>
+
             <p>
                 Word Length:
                 <span id="word-length">0</span>
             </p>
-            
+
             <p>
                 Total Attempts:
                 <span id="total-attempts">0</span>
             </p>
-        
         </section>
 
-
-        <section class="word-board" id="word-board">
-
-        </section>
-
+        <section class="word-board" id="word-board"></section>
 
         <section class="guess-section">
-
             <input
                 type="text"
                 id="guess-input"
@@ -107,34 +238,157 @@
                 placeholder="Enter your guess"
             >
 
-            <button id="guess-button">
-                GUESS
-            </button>
-
+            <button id="guess-button">GUESS</button>
         </section>
-
 
         <section class="attempt-result" id="attempt-result">
-
             <p id="result-message"></p>
-
             <div id="wrong-position"></div>
             <div id="not-present"></div>
-
         </section>
-
 
         <section class="game-actions">
-
             <div id="clue-area"></div>
-
             <div id="forfeit-area"></div>
-
         </section>
+
         <section id="confirmation-area" class="confirmation-area"></section>
 
-    </main>
+        <section class="rules-section" id="game-rules-section" aria-label="Game rules">
 
+            <button type="button" class="rules-close-button">
+                Close
+            </button>
+
+            <h2>RULES</h2>
+
+            <div class="rules-tabs">
+                <button type="button" class="rules-tab active"
+                    data-rules-tab="summary">Summary</button>
+                <button type="button" class="rules-tab"
+                    data-rules-tab="detailed">Detailed Rules</button>
+            </div>
+
+            <div class="rules-panel active" data-rules-panel="summary">
+                <h3>How to Play</h3>
+                <ul>
+                    <li>Guess the hidden English word using the given word length.</li>
+                    <li>A letter is revealed when both the letter and its position are correct.</li>
+                    <li>After an unsuccessful guess, the game shows wrong-position and not-present letters.</li>
+                    <li>You can use a limited number of clues, depending on your level.</li>
+                    <li>After using all your clues, you may choose to forfeit the game.</li>
+                    <li>Your points depend on the result of the game.</li>
+                </ul>
+            </div>
+
+            <div class="rules-panel" data-rules-panel="detailed">
+                <h3>Detailed Rules</h3>
+
+                <h4>1. Guessing the Word</h4>
+                <p>
+                    Each game has a hidden English word. Use the displayed word
+                    length to make a guess. Your guess must have the correct
+                    length and belong to the game's word list.
+                </p>
+                <p>
+                    If a guessed letter matches the secret word at the same
+                    position, that letter is revealed on the word board.
+                    Letters already revealed in their correct positions are
+                    not reported as wrong-position or not-present letters.
+                </p>
+                <p>
+                    After an unsuccessful valid guess, the game displays
+                    wrong-position letters and letters that are not present
+                    in the remaining unrevealed word. Repeated letters in
+                    these result lists are shown only once.
+                </p>
+                <p>
+                    Invalid guesses do not reveal letters, but they count
+                    toward your total attempts and the counter that makes
+                    clues available.
+                </p>
+
+                <h4>2. Levels and Clues</h4>
+                <p>
+                    Each level provides a limited number of clues. A clue
+                    reveals one unrevealed letter in the word.
+                </p>
+
+                <div class="rules-table-wrapper">
+                    <table class="rules-table">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Name</th>
+                                <th>Maximum Clues</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Easy</td><td>2</td></tr>
+                            <tr><td>2</td><td>Normal</td><td>2</td></tr>
+                            <tr><td>3</td><td>Intermediate</td><td>3</td></tr>
+                            <tr><td>4</td><td>Advanced</td><td>3</td></tr>
+                            <tr><td>5</td><td>Expert</td><td>4</td></tr>
+                            <tr><td>6</td><td>Master</td><td>4</td></tr>
+                            <tr><td>7</td><td>Legend</td><td>5</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    A clue becomes available after five unsuccessful attempts.
+                    Using a clue resets the unsuccessful-attempt counter.
+                    The clue button appears when a clue is available.
+                </p>
+
+                <h4>3. Forfeiting</h4>
+                <p>
+                    Once all clues for the current level have been used, you
+                    can choose to forfeit. Forfeiting ends the game, reveals
+                    the word, and deducts points based on your level.
+                </p>
+
+                <h4>4. Points</h4>
+                <p>
+                    <strong>Correctly guessing the word:</strong> You earn
+                    points based on your level, reduced by 15% of the base
+                    points for each clue used.
+                </p>
+                <p>
+                    <strong>Revealing the whole word through wrong guesses:</strong>
+                    You earn a fixed 50 points.
+                </p>
+                <p>
+                    <strong>Forfeiting:</strong> You lose 25 points multiplied
+                    by your level.
+                </p>
+
+                <div class="rules-formula">
+                    <p><strong>Winning points</strong></p>
+                    <p>Base points = Level × 100</p>
+                    <p>Final points = Base points × (1 − 0.15 × clues used)</p>
+                    <p><strong>Forfeit penalty</strong> = Level × 25 points</p>
+                </div>
+
+                <h4>5. Unlocking Levels</h4>
+                <p>
+                    Your available level depends on your total points.
+                    Reach the following totals to unlock each next level.
+                </p>
+
+                <ul>
+                    <li>500 points — Level 2: Normal</li>
+                    <li>1,200 points — Level 3: Intermediate</li>
+                    <li>2,000 points — Level 4: Advanced</li>
+                    <li>3,000 points — Level 5: Expert</li>
+                    <li>4,200 points — Level 6: Master</li>
+                    <li>5,500 points — Level 7: Legend</li>
+                </ul>
+            </div>
+
+        </section>
+
+    </main>
 
 
     <main id="result-screen" class="screen">
@@ -144,7 +398,6 @@
             <h2 id="final-title">CONGRATS!</h2>
 
             <div class="final-results">
-
                 <p>
                     Word:
                     <span id="final-word"></span>
@@ -164,19 +417,11 @@
                     Points:
                     <span id="final-points"></span>
                 </p>
-
             </div>
 
             <div class="result-actions">
-
-                <button id="play-again-button">
-                    PLAY AGAIN
-                </button>
-
-                <button id="home-button">
-                    HOME
-                </button>
-
+                <button id="play-again-button">PLAY AGAIN</button>
+                <button id="home-button">HOME</button>
             </div>
 
         </section>
@@ -184,13 +429,78 @@
     </main>
 
 
-
     <div id="message-box" class="message-box">
         <p id="message-text"></p>
     </div>
 
-
     <script src="script.js"></script>
+
+    <script>
+    (function () {
+        document.querySelectorAll(".rules-section").forEach(function (section) {
+            const tabs = section.querySelectorAll(".rules-tab");
+            const panels = section.querySelectorAll(".rules-panel");
+
+            tabs.forEach(function (tab) {
+                tab.addEventListener("click", function () {
+                    const selectedTab = tab.dataset.rulesTab;
+
+                    tabs.forEach(function (item) {
+                        item.classList.toggle("active", item === tab);
+                    });
+
+                    panels.forEach(function (panel) {
+                        panel.classList.toggle(
+                            "active",
+                            panel.dataset.rulesPanel === selectedTab
+                        );
+                    });
+                });
+            });
+
+            section.querySelectorAll(".rules-tab").forEach(function (tab) {
+                tab.classList.toggle(
+                    "active",
+                    tab.dataset.rulesTab === "summary"
+                );
+            });
+
+            section.querySelectorAll(".rules-panel").forEach(function (panel) {
+                panel.classList.toggle(
+                    "active",
+                    panel.dataset.rulesPanel === "summary"
+                );
+            });
+        });
+
+        const controls = [
+            {
+                button: document.getElementById("home-rules-button"),
+                section: document.getElementById("home-rules-section")
+            },
+            {
+                button: document.getElementById("game-rules-button"),
+                section: document.getElementById("game-rules-section")
+            }
+        ];
+
+        controls.forEach(function (item) {
+            if (!item.button || !item.section) return;
+
+            const closeButton = item.section.querySelector(".rules-close-button");
+
+            item.button.addEventListener("click", function () {
+                item.section.classList.add("open");
+            });
+
+            if (closeButton) {
+                closeButton.addEventListener("click", function () {
+                    item.section.classList.remove("open");
+                });
+            }
+        });
+    })();
+    </script>
 
 </body>
 
