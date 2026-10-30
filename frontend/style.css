@@ -574,4 +574,14 @@ body {
         padding: 9px 7px;
         font-size: 14px;
     }
+
+    .result-board {
+        width: 100%;
+        padding: 30px 18px;
+    }
+
+    #final-title {
+        font-size: clamp(20px, 6vw, 28px);
+        overflow-wrap: anywhere;
+    }
 }
