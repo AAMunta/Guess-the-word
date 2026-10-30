@@ -4,13 +4,15 @@ let playerPoints = 0;
 let selectedLevel = null;
 
 let currentGame = {
+    sessionId: null,
     length: 0,
     revealed: [],
     hintsUsed: 0,
     maxHints: 0,
     totalAttempts: 0,
     clueAvailable: false,
-    forfeitAvailable: false
+    forfeitAvailable: false,
+    progressApplied: false
 };
 
 
@@ -160,6 +162,8 @@ async function startGame(level) {
 
 
         const data = await response.json();
+        currentGame.sessionId = data.session_id;
+        currentGame.progressApplied = false;
 
 
         currentGame.length = data.length;
@@ -265,6 +269,7 @@ async function makeGuess() {
             },
 
             body: JSON.stringify({
+                session_id: currentGame.sessionId,
                 guess: guess
             })
 
@@ -287,10 +292,9 @@ async function makeGuess() {
         document.getElementById("total-attempts").textContent = data.total_attempts;
         currentGame.clueAvailable = data.clue_available;
         currentGame.forfeitAvailable = data.forfeit_available;
-        currentGame.revealed = data.revealed;
         
         if (data.status === "invalid") {
-
+            
             clearGuessResult();
             updateGameActions();
 
@@ -302,6 +306,7 @@ async function makeGuess() {
 
         }
         
+        currentGame.revealed = data.revealed;
 
         if (data.status === "won") {
 
@@ -502,7 +507,13 @@ async function useClue() {
     try {
 
         const response = await fetch("/api/clue", {
-            method: "POST"
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                session_id: currentGame.sessionId
+            })
         });
 
         if (!response.ok) {
@@ -567,8 +578,14 @@ async function forfeitGame() {
     try {
 
         const response = await fetch("/api/forfeit", {
-            method: "POST"
-        });
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                session_id: currentGame.sessionId
+            })
+       });
 
         if (!response.ok) {
 
@@ -592,7 +609,48 @@ async function forfeitGame() {
 }
 
 
+function updateProgress(points) {
+
+    playerPoints += points;
+
+    if (playerPoints >= 5500 && playerLevel < 7) {
+        playerLevel = 7;
+    }
+    else if (playerPoints >= 4200 && playerLevel < 6) {
+        playerLevel = 6;
+    }
+    else if (playerPoints >= 3000 && playerLevel < 5) {
+        playerLevel = 5;
+    }
+    else if (playerPoints >= 2000 && playerLevel < 4) {
+        playerLevel = 4;
+    }
+    else if (playerPoints >= 1200 && playerLevel < 3) {
+        playerLevel = 3;
+    }
+    else if (playerPoints >= 500 && playerLevel < 2) {
+        playerLevel = 2;
+    }
+
+    localStorage.setItem(
+        "guessTheWordProgress",
+        JSON.stringify({
+            points: playerPoints,
+            level: playerLevel
+        })
+    );
+
+    displayProgress();
+    updateLevelCards();
+}
+
+
 function showFinalResult(data) {
+
+    if (data.points !== undefined && !currentGame.progressApplied) {
+    updateProgress(data.points);
+    currentGame.progressApplied = true;
+    }
 
     document.getElementById("final-word").textContent =
         data.word || "";
@@ -664,42 +722,24 @@ document.getElementById("guess-input")
     });
 
 
-async function loadProgress() {
-
+function loadProgress() {
     try {
+        const savedProgress = localStorage.getItem("guessTheWordProgress");
 
-        const response = await fetch("/api/progress");
+        if (savedProgress) {
+            const data = JSON.parse(savedProgress);
 
-
-        if (!response.ok) {
-
-            throw new Error("Unable to load player progress.");
-
+            playerPoints = Number(data.points) || 0;
+            playerLevel = Number(data.level) || 1;
+            playerLevel = Math.max(1, Math.min(7, playerLevel));
         }
-
-
-        const data = await response.json();
-
-
-        playerLevel = data.level;
-
-        playerPoints = data.points;
-
-
-        displayProgress();
-
-        updateLevelCards();
-
+    } catch (error) {
+        playerPoints = 0;
+        playerLevel = 1;
     }
 
-    catch (error) {
-
-        displayProgress();
-
-        updateLevelCards();
-
-    }
-
+    displayProgress();
+    updateLevelCards();
 }
 
 loadProgress();
